@@ -20,11 +20,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.example.android.sports.databinding.FragmentSportsListBinding
 
 /**
@@ -52,41 +50,10 @@ class SportsListFragment : Fragment() {
             // This will automatically update the dual pane content
             sportsViewModel.updateCurrentSport(it)
             // Navigate to the details screen
-            binding.slidingPaneLayout.openPane()
+            val action = SportsListFragmentDirections.actionSportsListFragmentToNewsFragment()
+            this.findNavController().navigate(action)
         }
         binding.recyclerView.adapter = adapter
-        val slidingPaneLayout = binding.slidingPaneLayout
-        slidingPaneLayout.lockMode = SlidingPaneLayout.LOCK_MODE_LOCKED
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            SportsListOnBackPressedCallBack(slidingPaneLayout)
-        )
         adapter.submitList(sportsViewModel.sportsData)
-    }
-}
-
-class SportsListOnBackPressedCallBack(
-    private val slidingPaneLayout: SlidingPaneLayout
-) : OnBackPressedCallback(slidingPaneLayout.isSlideable && slidingPaneLayout.isOpen), SlidingPaneLayout.PanelSlideListener {
-
-    override fun handleOnBackPressed() {
-        slidingPaneLayout.closePane()
-
-    }
-
-    override fun onPanelSlide(panel: View, slideOffset: Float) {
-
-    }
-
-    override fun onPanelOpened(panel: View) {
-        isEnabled = true
-    }
-
-    override fun onPanelClosed(panel: View) {
-        isEnabled = false
-    }
-
-    init {
-        slidingPaneLayout.addPanelSlideListener(this)
     }
 }
